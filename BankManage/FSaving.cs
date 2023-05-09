@@ -30,7 +30,7 @@ namespace BankManage
 
         private void FSaving_Load(object sender, EventArgs e)
         {
-            LoadCustomerData($" WHERE STK = '{currentCustomer.Stk}'");
+            LoadCustomerData($" WHERE STK = '{currentCustomer.STK}'");
         }
         private void LoadCustomerData(string condition)
         {
@@ -40,7 +40,18 @@ namespace BankManage
         private void btnCreate_Click(object sender, EventArgs e)
         {
             string randomMaSo = RandomMaSo();
-            Saving saving = new Saving(currentCustomer.Stk, randomMaSo, Convert.ToInt32(txtMoneySend.Text), cbTerm.Text, cbMethod.Text, dtpSend.Value.Date, dtpEnd.Value.Date);
+            Saving newSaving = new Saving()
+            {
+                //STK, MaSo, Money, KyHan, PhuongThucDaoHan, NgayGui, NgayDaoHan
+                STK = currentCustomer.STK,
+                MaSo = randomMaSo,
+                Money = Convert.ToInt32(txtMoneySend.Text),
+                KyHan = cbTerm.Text,
+                PhuongThucDaoHan = cbMethod.Text,
+                NgayGui = dtpSend.Value.Date,
+                NgayDaoHan = dtpEnd.Value.Date,
+                
+            };
             int remainMoneyAfterSaving = Convert.ToInt32(currentCustomer.Money) - Convert.ToInt32(txtMoneySend.Text);
             if (remainMoneyAfterSaving < 0)
             {
@@ -55,15 +66,19 @@ namespace BankManage
                 currentCustomer.Money = remainMoneyAfterSaving;
                 txtMoneySend.Clear();
                 customerDAO.UpdateMoney(currentCustomer);
-                savingDAO.Create(saving);
+                savingDAO.Create(newSaving);
                 MessageBox.Show($"Bạn đã tạo thành công sổ tiết kiệm số: " + txtSavingNumber.Text + "\nKỳ hạn: " + cbTerm.Text + "\nNgày đáo hạn: " + dtpEnd.Value.Date + " (" + cbMethod.Text +")");
             }
         }
 
         private void btnWithdraw_Click(object sender, EventArgs e)
         {
-            Saving withdrawsaving = new Saving(txtSavingNumber.Text);
-            savingDAO.Delete(withdrawsaving);
+            Saving withdrawSaving = new Saving()
+            {
+                MaSo = txtSavingNumber.Text,
+
+            };
+            savingDAO.Delete(withdrawSaving);
             LoadCustomerData($" WHERE MaSo = '{txtSavingNumber.Text}'");
             MessageBox.Show("Lưu ý: Rút tiền sẽ bị mất phí 5%");
             currentCustomer.Money = currentCustomer.Money + (Convert.ToInt32(txtMoneySend.Text) * 95 / 100);
@@ -94,8 +109,12 @@ namespace BankManage
                 {
                     currentCustomer.Money = currentCustomer.Money + Convert.ToInt32(txtMoneySend.Text) + loans;
                     customerDAO.UpdateMoney(currentCustomer);
-                    Saving withdrawsaving = new Saving(txtSavingNumber.Text);
-                    savingDAO.Delete(withdrawsaving);
+                    Saving withdrawSaving = new Saving()
+                    {
+                        MaSo = txtSavingNumber.Text,
+
+                    };
+                    savingDAO.Delete(withdrawSaving);
                     LoadCustomerData($" WHERE MaSo = '{txtSavingNumber.Text}'");
                     MessageBox.Show("DA XOA SO THANH CONG, TIEN LAI VA GOC DA DUOC NHAN TRONG TAI KHOAN");
                 }
@@ -148,20 +167,50 @@ namespace BankManage
                     currentCustomer.Money = currentCustomer.Money + loans;
                     customerDAO.UpdateMoney(currentCustomer);
                     string randomMaSo = RandomMaSo();
-                    Saving saving = new Saving(currentCustomer.Stk, randomMaSo, Convert.ToInt32(txtMoneySend.Text), cbTerm.Text, cbMethod.Text, dtpSend.Value.Date, dtpEnd.Value.Date);
-                    savingDAO.Create(saving);
-                    Saving withdrawsaving = new Saving(txtSavingNumber.Text);
-                    savingDAO.Delete(withdrawsaving);
+                    Saving newSaving = new Saving()
+                    {
+                        
+                        STK = currentCustomer.STK,
+                        MaSo = randomMaSo,
+                        Money = Convert.ToInt32(txtMoneySend.Text),
+                        KyHan = cbTerm.Text,
+                        PhuongThucDaoHan = cbMethod.Text,
+                        NgayGui = dtpSend.Value.Date,
+                        NgayDaoHan = dtpEnd.Value.Date,
+
+                    };
+                    savingDAO.Create(newSaving);
+                    Saving withdrawSaving = new Saving()
+                    {
+                        MaSo = txtSavingNumber.Text,
+
+                    };
+                    savingDAO.Delete(withdrawSaving);
                     MessageBox.Show("Da tra lai vao tai khoan");
                 }
                 if (cbMethod.Text.Contains("Toan bo tien goc và tien lai sang ky han moi"))
                 {
                     string randomMaSo = RandomMaSo();
                     int txtMoneysend_update = Convert.ToInt32(txtMoneySend.Text) + loans;
-                    Saving saving = new Saving(currentCustomer.Stk, randomMaSo, txtMoneysend_update, cbTerm.Text, cbMethod.Text, dtpSend.Value.Date, dtpEnd.Value.Date);
-                    savingDAO.Create(saving);
-                    Saving withdrawsaving = new Saving(txtSavingNumber.Text);
-                    savingDAO.Delete(withdrawsaving);
+                    Saving newSaving = new Saving()
+                    {
+
+                        STK = currentCustomer.STK,
+                        MaSo = randomMaSo,
+                        Money = Convert.ToInt32(txtMoneySend.Text),
+                        KyHan = cbTerm.Text,
+                        PhuongThucDaoHan = cbMethod.Text,
+                        NgayGui = dtpSend.Value.Date,
+                        NgayDaoHan = dtpEnd.Value.Date,
+
+                    };
+                    savingDAO.Create(newSaving);
+                    Saving withdrawSaving = new Saving()
+                    {
+                        MaSo = txtSavingNumber.Text,
+
+                    };
+                    savingDAO.Delete(withdrawSaving);
                     MessageBox.Show("Da chuyen goc va lai sang ky han moi");
                 }
             }

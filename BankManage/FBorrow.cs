@@ -43,7 +43,20 @@ namespace BankManage
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            Borrow borrow = new Borrow(Convert.ToInt32(txtMoneyRemain.Text), currentCustomer.CitizenID, Convert.ToInt32(txtEarnings.Text), Convert.ToInt32(txtMoneyBorrow.Text),cbTypeOfCredit.Text, cbCollateral.Text, cbTerm.Text,dtpAllow.Value.Date, dtpBack.Value.Date);
+            
+            Borrow newBorrow = new Borrow ()
+            {
+                //Money, CitizenID, Salary, Moneyborrow, Kieutindung, TaiSanTheChap, Kyhan, Ngaychovay, Ngayhoantien
+                Money = Convert.ToInt32(txtMoneyRemain.Text),
+                CitizenID = currentCustomer.CitizenID,
+                Salary = Convert.ToInt32(txtEarnings.Text),
+                MoneyBorrow = Convert.ToInt32(txtMoneyBorrow.Text),
+                KieuTinDung = cbTypeOfCredit.Text,
+                TaiSanTheChap = cbCollateral.Text,
+                KyHan = cbTerm.Text,
+                NgayChoVay = dtpAllow.Value.Date,
+                NgayHoanTien = dtpBack.Value.Date,
+            };
             if (Convert.ToInt32(txtMoneyBorrow.Text) > (15 * Convert.ToInt32(txtEarnings.Text)) + Convert.ToInt32(txtMoneyRemain.Text))
             {
                 MessageBox.Show("Bạn không được phép vay, bởi vì quá mức giới hạn chi trả của bạn");
@@ -51,7 +64,7 @@ namespace BankManage
             else
             {
 
-                borrowDAO.Create(borrow);
+                borrowDAO.Create(newBorrow);
                 MessageBox.Show("Chúc mừng bạn đã vay thành công với số tiền: " + txtMoneyBorrow.Text + "\nKỳ hạn: " + cbTerm.Text + "\nVui lòng thanh toán trước " + dtpBack.Value.Date);
             }
         }
@@ -64,7 +77,7 @@ namespace BankManage
         {
             try
             {
-                LoadData($" WHERE CitizenID = '{currentCustomer.CitizenId}'");
+                LoadData($" WHERE CitizenID = '{currentCustomer.CitizenID}'");
                 if (DateTime.Compare(DateTime.Now, dtpBack.Value.Date) < 0)
                 {
                     MessageBox.Show("Hiện tại bạn đang có nợ xấu, vui lòng thanh toán.");
