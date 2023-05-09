@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace BankManage
 {
@@ -64,7 +65,7 @@ namespace BankManage
         private void TransHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             pnlOption.Controls.Clear();
-            FHistory fHistory = new FHistory(choosedCustomer.Stk);
+            FHistory fHistory = new FHistory(choosedCustomer.STK);
             ShowFormOnPanel(fHistory);
         }
         private void SavingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -135,7 +136,16 @@ namespace BankManage
             string id = gvSTK.Rows[numrow].Cells["CitizenId"].Value.ToString();
             string phoneNumber = gvSTK.Rows[numrow].Cells["PhoneNum"].Value.ToString();
             int money = Convert.ToInt32(gvSTK.Rows[numrow].Cells["Money"].Value.ToString());
-            choosedCustomer = new Customer(stk, name, address, dob, id, phoneNumber, money);
+            choosedCustomer = new Customer()
+            {
+                STK = stk,
+                Name = name,
+                Address = address,
+                DoB = dob,
+                CitizenID = id,
+                PhoneNum = phoneNumber,
+                Money = money,
+            };
         }
 
         private void ShowFormOnPanel(Form form)
