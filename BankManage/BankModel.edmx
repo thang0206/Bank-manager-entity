@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="BankManageDMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="BankManageDMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Borrow">
           <Key>
             <PropertyRef Name="CitizenID" />
@@ -44,6 +44,7 @@
           <Property Name="Money" Type="int" />
           <Property Name="CreateAt" Type="date" />
           <Property Name="UpdateAt" Type="date" />
+          <Property Name="Note" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Saving">
           <Key>
@@ -52,8 +53,8 @@
           <Property Name="STK" Type="char" MaxLength="10" />
           <Property Name="MaSo" Type="char" MaxLength="10" Nullable="false" />
           <Property Name="Money" Type="int" />
-          <Property Name="KyHan" Type="char" MaxLength="255" />
-          <Property Name="PhuongThucDaoHan" Type="char" MaxLength="255" />
+          <Property Name="KyHan" Type="varchar" MaxLength="255" />
+          <Property Name="PhuongThucDaoHan" Type="varchar" MaxLength="255" />
           <Property Name="NgayGui" Type="date" />
           <Property Name="NgayDaoHan" Type="date" />
         </EntityType>
@@ -68,8 +69,9 @@
           <Property Name="Money" Type="int" />
           <Property Name="ThoigianGD" Type="date" />
           <Property Name="ReceivedSTK" Type="char" MaxLength="10" />
+          <Property Name="Note" Type="varchar" MaxLength="255" />
         </EntityType>
-        <Association Name="FK__Credit__STK__5EBF139D">
+        <Association Name="FK__Credit__STK__2BFE89A6">
           <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
           <End Role="Credit" Type="Self.Credit" Multiplicity="*" />
           <ReferentialConstraint>
@@ -81,7 +83,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Saving__STK__49C3F6B7">
+        <Association Name="FK__Saving__STK__36B12243">
           <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
           <End Role="Saving" Type="Self.Saving" Multiplicity="*" />
           <ReferentialConstraint>
@@ -93,7 +95,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Trans__ReceivedS__37A5467C">
+        <Association Name="FK__Trans__ReceivedS__4AB81AF0">
           <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
           <End Role="Trans" Type="Self.Trans" Multiplicity="*" />
           <ReferentialConstraint>
@@ -105,7 +107,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Trans__STK__36B12243">
+        <Association Name="FK__Trans__STK__49C3F6B7">
           <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
           <End Role="Trans" Type="Self.Trans" Multiplicity="*" />
           <ReferentialConstraint>
@@ -123,25 +125,24 @@
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Saving" EntityType="Self.Saving" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Trans" EntityType="Self.Trans" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Credit__STK__5EBF139D" Association="Self.FK__Credit__STK__5EBF139D">
+          <AssociationSet Name="FK__Credit__STK__2BFE89A6" Association="Self.FK__Credit__STK__2BFE89A6">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Credit" EntitySet="Credit" />
           </AssociationSet>
-          <AssociationSet Name="FK__Saving__STK__49C3F6B7" Association="Self.FK__Saving__STK__49C3F6B7">
+          <AssociationSet Name="FK__Saving__STK__36B12243" Association="Self.FK__Saving__STK__36B12243">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Saving" EntitySet="Saving" />
           </AssociationSet>
-          <AssociationSet Name="FK__Trans__ReceivedS__37A5467C" Association="Self.FK__Trans__ReceivedS__37A5467C">
+          <AssociationSet Name="FK__Trans__ReceivedS__4AB81AF0" Association="Self.FK__Trans__ReceivedS__4AB81AF0">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Trans" EntitySet="Trans" />
           </AssociationSet>
-          <AssociationSet Name="FK__Trans__STK__36B12243" Association="Self.FK__Trans__STK__36B12243">
+          <AssociationSet Name="FK__Trans__STK__49C3F6B7" Association="Self.FK__Trans__STK__49C3F6B7">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Trans" EntitySet="Trans" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="BankManageDMModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -189,6 +190,7 @@
           <NavigationProperty Name="Savings" Relationship="Self.FK__Saving__STK__49C3F6B7" FromRole="Customer" ToRole="Saving" />
           <NavigationProperty Name="Trans" Relationship="Self.FK__Trans__ReceivedS__37A5467C" FromRole="Customer" ToRole="Trans" />
           <NavigationProperty Name="Trans1" Relationship="Self.FK__Trans__STK__36B12243" FromRole="Customer" ToRole="Trans" />
+          <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Saving">
           <Key>
@@ -197,8 +199,8 @@
           <Property Name="STK" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <Property Name="MaSo" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="Money" Type="Int32" />
-          <Property Name="KyHan" Type="String" MaxLength="255" FixedLength="true" Unicode="false" />
-          <Property Name="PhuongThucDaoHan" Type="String" MaxLength="255" FixedLength="true" Unicode="false" />
+          <Property Name="KyHan" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="PhuongThucDaoHan" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="NgayGui" Type="DateTime" Precision="0" />
           <Property Name="NgayDaoHan" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Customer" Relationship="Self.FK__Saving__STK__49C3F6B7" FromRole="Saving" ToRole="Customer" />
@@ -216,6 +218,7 @@
           <Property Name="ReceivedSTK" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Customer" Relationship="Self.FK__Trans__ReceivedS__37A5467C" FromRole="Trans" ToRole="Customer" />
           <NavigationProperty Name="Customer1" Relationship="Self.FK__Trans__STK__36B12243" FromRole="Trans" ToRole="Customer" />
+          <Property Name="Note" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK__Credit__STK__5EBF139D">
           <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
@@ -325,6 +328,7 @@
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="BankManageDMModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="STK" ColumnName="STK" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
@@ -353,6 +357,7 @@
           <EntitySetMapping Name="Trans">
             <EntityTypeMapping TypeName="BankManageDMModel.Tran">
               <MappingFragment StoreEntitySet="Trans">
+                <ScalarProperty Name="Note" ColumnName="Note" />
                 <ScalarProperty Name="STK" ColumnName="STK" />
                 <ScalarProperty Name="MaGD" ColumnName="MaGD" />
                 <ScalarProperty Name="LoaiGD" ColumnName="LoaiGD" />
