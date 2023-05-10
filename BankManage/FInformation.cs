@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,15 +13,14 @@ namespace BankManage
 {
     public partial class FInformation : Form
     {
+        DBConnection dBConnection = new DBConnection();
         CustomerDAO customerDAO = new CustomerDAO();
         Customer customer;
-        DataTable datatable;
 
-        public FInformation(Customer choosedCustomer, DataTable datatable)
+        public FInformation(Customer choosedCustomer)
         {
             InitializeComponent();
             customer = choosedCustomer;
-            this.datatable = datatable;
         }
 
         private void FInformation_Load(object sender, EventArgs e)
@@ -32,8 +32,9 @@ namespace BankManage
         private void btnCreate_Click(object sender, EventArgs e)
         {
             string randomStk = RandomSTK();
-            for (int i = 0; i < datatable.Rows.Count - 1; i++)
-                while (randomStk == datatable.Rows[i]["STK"].ToString())
+            DataTable Customers = GetAllCustomer();
+            for (int i = 0; i < Customers.Rows.Count - 1; i++)
+                while (randomStk == Customers.Rows[i]["STK"].ToString())
                     randomStk = RandomSTK();
             Customer newCustomer = new Customer()
             {
@@ -44,7 +45,7 @@ namespace BankManage
                 CitizenID = txtID.Text,
                 PhoneNum = txtPNum.Text,
                 Money = 0,
-                //CreatedAt = DateTime.Now
+                CreateAt = DateTime.Now
             };
             if (customerDAO.ValidateFormCreate(newCustomer))
                 MessageBox.Show("Khong duoc de trong");
@@ -108,6 +109,17 @@ namespace BankManage
             txtID.Text = customer.CitizenID;
             txtPNum.Text = customer.PhoneNum;
             txtMoney.Text = customer.Money.ToString();
+        }
+
+        private DataTable GetAllCustomer()
+        {
+
+            DataGrid dataGrid = new DataGrid
+            {
+                DataSource = dBConnection.Load("Customer")
+            };
+            DataTable datatable = (DataTable)dataGrid.DataSource;
+            return datatable;
         }
     }
 }
