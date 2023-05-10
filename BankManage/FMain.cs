@@ -45,7 +45,7 @@ namespace BankManage
             }
             gvSTK.Visible = isShowGvCustomer;
             menuStrip1.Enabled = isShowGvCustomer;
-            if (!isShowGvCustomer)
+            if (!gvSTK.Visible)
             {
                 MessageBox.Show("Chua co tai khoan");
                 informationToolStripMenuItem_Click(sender, e);
@@ -57,8 +57,6 @@ namespace BankManage
         private void btnCancel_Click(object sender, EventArgs e)
         {
             gvSTK.Visible = false;
-            menuStrip1.Enabled = false;
-            pnlOption.Visible = false;
             txtFilter.Clear();
         }
 
@@ -113,15 +111,10 @@ namespace BankManage
 
         private void informationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DataGrid dataGrid = new DataGrid
-            {
-                DataSource = dBConnection.Load("Customer")
-            };
-            DataTable datatable = (DataTable)dataGrid.DataSource;
             pnlOption.Controls.Clear();
             if (choosedCustomer != null)
             {
-                FInformation fInformation = new FInformation(choosedCustomer, datatable);
+                FInformation fInformation = new FInformation(choosedCustomer);
                 ShowFormOnPanel(fInformation);
             }
         }
