@@ -62,7 +62,7 @@ namespace BankManage
                             string STK = datatable.Rows[i][0].ToString();
                             if (txtSTK.Text == STK)
                             {
-                                customerReceive = new Customer(STK, "", "", DateTime.Now, "", "", Convert.ToInt32(datatable.Rows[i][6].ToString()));
+                                customerReceive = CreateCustomer(STK, Convert.ToInt32(datatable.Rows[i][6].ToString()));
                             }
                         }
                         customerReceive.Money = Convert.ToInt32(customerReceive.Money + Convert.ToInt32(txtMoneySend.Text));
@@ -70,10 +70,11 @@ namespace BankManage
 
                         Random random = new Random();
                         string TransCode = "CK" + random.NextString(8);
+                        
+                        Tran transactionSend = CreateTrans(customerSend.STK, TransCode, "Chuyen khoan", Convert.ToInt32(txtMoneySend.Text), customerReceive.STK, txtNote.Text);
+                        Tran transactionReceive = CreateTrans(customerReceive.STK, TransCode, "Nhan tien Chuyen khoan", Convert.ToInt32(txtMoneySend.Text), customerSend.STK, txtNote.Text);
 
-                        Transaction transactionSend = new Transaction(customerSend.Stk, TransCode, "Chuyen khoan", Convert.ToInt32(txtMoneySend.Text), DateTime.Now, customerReceive.Stk, txtNote.Text);
                         transactionDAO.Create(transactionSend);
-                        Transaction transactionReceive = new Transaction(customerReceive.Stk, TransCode, "Nhan tien Chuyen khoan", Convert.ToInt32(txtMoneySend.Text), DateTime.Now, customerSend.Stk, txtNote.Text);
                         transactionDAO.Create(transactionReceive);
                     }
                 }
@@ -98,7 +99,8 @@ namespace BankManage
                             string STK = datatable.Rows[i][0].ToString();
                             if (txtSTK.Text == STK)
                             {
-                                customerReceive = new Customer(STK, "", "", DateTime.Now, "", "", Convert.ToInt32(datatable.Rows[i][6].ToString()));
+                                customerReceive = CreateCustomer(STK, Convert.ToInt32(datatable.Rows[i][6].ToString()));
+
                             }
                         }
                         customerReceive.Money = Convert.ToInt32(customerReceive.Money + Convert.ToInt32(txtMoneySend.Text));
@@ -107,9 +109,10 @@ namespace BankManage
                         Random random = new Random();
                         string TransCode = "TD" + random.NextString(8);
 
-                        Transaction transactionSend = new Transaction(customerSend.Stk, TransCode, "Chuyen khoan Tin dung", Convert.ToInt32(txtMoneySend.Text), DateTime.Now, customerReceive.Stk, txtNote.Text);
+                        Tran transactionSend = CreateTrans(customerSend.STK, TransCode, "Chuyen khoan Tin dung", Convert.ToInt32(txtMoneySend.Text), customerReceive.STK, txtNote.Text);
+                        Tran transactionReceive = CreateTrans(customerReceive.STK, TransCode, "Nhan tien Chuyen khoan", Convert.ToInt32(txtMoneySend.Text), customerSend.STK, txtNote.Text);
+
                         transactionDAO.Create(transactionSend);
-                        Transaction transactionReceive = new Transaction(customerReceive.Stk, TransCode, "Nhan tien Chuyen khoan", Convert.ToInt32(txtMoneySend.Text), DateTime.Now, customerSend.Stk, txtNote.Text);
                         transactionDAO.Create(transactionReceive);
                     }
                 }
@@ -127,7 +130,7 @@ namespace BankManage
             lblNote.Visible = true;
             bool flag = false;
 
-            if (txtSTK.Text == customerSend.Stk)
+            if (txtSTK.Text == customerSend.STK)
             {
                 lblNote.Text = "Người nhận không hợp lệ";
                 btnOK.Enabled = false;
@@ -161,7 +164,10 @@ namespace BankManage
             }
             else if (cmbMethod.SelectedIndex == 1)
             {
-                creditSend = new Credit(customerSend.Stk);
+                creditSend = new Credit()
+                {
+                    STK = customerSend.STK,
+                };
                 creditSend = creditDAO.Get(creditSend);
 
                 if (creditSend.HanMuc == 0)
@@ -186,6 +192,30 @@ namespace BankManage
             txtNote.Clear();
             txtSTK.Clear();
             lblNote.Text = "";
+        }
+
+        private Customer CreateCustomer(string STK, int Money)
+        {
+            return new Customer()
+            {
+                STK = STK,
+                CreateAt = DateTime.Now,
+                Money = Money
+            };
+        }
+
+        private Tran CreateTrans(string STK, string MaGD, string LoaiGD, int Money, string ReceivedSTK, string Note)
+        {
+            return new Tran()
+            {
+                STK = STK,
+                MaGD = MaGD,
+                LoaiGD = LoaiGD,
+                Money = Money,
+                ThoigianGD = DateTime.Now,
+                ReceivedSTK = ReceivedSTK,
+                Note = Note
+            };
         }
     }
 }

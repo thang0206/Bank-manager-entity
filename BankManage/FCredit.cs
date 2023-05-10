@@ -29,11 +29,13 @@ namespace BankManage
 
         private void FCredit_Load(object sender, EventArgs e)
         {
-            credit = new Credit(customer.Stk);
-
+            credit = new Credit()
+            {
+                STK = customer.STK,
+            };
             credit = creditDAO.Get(credit);
 
-            txtSothe.Text = credit.ID;
+            txtSothe.Text = credit.MaThe;
             txtHanmuc.Text = credit.HanMuc.ToString();
             txtMoneyUsed.Text = credit.UsedMoney.ToString();
 
@@ -84,7 +86,16 @@ namespace BankManage
             }
             else
             {
-                Credit credit = new Credit(customer.Stk, MaThe, Convert.ToInt32(txtHanmuc.Text), 0, cmbMethod.Text, DateTime.Now, DateTime.Now.AddMonths(1));
+                Credit credit = new Credit()
+                {
+                    STK = customer.STK,
+                    MaThe = MaThe,
+                    HanMuc = Convert.ToInt32(txtHanmuc.Text),
+                    UsedMoney = 0,
+                    Method = cmbMethod.Text,
+                    NgayMo = DateTime.Now,
+                    NgayDaoHan = DateTime.Now.AddMonths(1)
+                };
                 creditDAO.Create(credit);
 
                 MessageBox.Show("Chúc mừng bạn đã mở thẻ tín dụng thành công:\nSố thẻ: " + MaThe + "\nHạn mức cho phép:" + txtHanmuc.Text + "\nVui lòng thanh toán dư nợ vào ngày " + DateTime.Now.Day + " của tháng tiếp theo, nếu phát sinh giao dịch");
@@ -94,7 +105,11 @@ namespace BankManage
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            Credit credit = new Credit(customer.Stk, txtSothe.Text);
+            Credit credit = new Credit()
+            {
+                STK = customer.STK,
+                MaThe = txtSothe.Text
+            };
             creditDAO.Delete(credit);
             FCredit_Load(sender, e);
             btnDelete.Enabled = false;
